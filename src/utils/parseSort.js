@@ -19,21 +19,21 @@ export const parseSortBy = (sortBy) => {
     return 'createdAt'
 }
 
-export const parseSearch = (value) => {
-    const isString = typeof value === 'string'
+export const parseSearch = (search) => {
+    const isString = typeof search === 'string'
     if (!isString) return null
-    const normalized = new RegExp(value, 'i')
+    const normalized = search.trim()
     return normalized
 }
 
 export const parsedSort = (query) => {
-    const { sortOrder, sortBy, value } = query
-    const parsedSearchValue = parseSearch(value)
+    const { sortOrder, sortBy, search } = query
+    const parsedSearchValue = parseSearch(search)
     const parsedSortOrder = parseSortOrder(sortOrder)
     const parsedSortBy = parseSortBy(sortBy)
     return {
         sortOrder: parsedSortOrder,
         sortBy: parsedSortBy,
-        value: parsedSearchValue
+        search: parsedSearchValue
     }
 }

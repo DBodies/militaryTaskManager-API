@@ -1,4 +1,8 @@
-export const filters = (taskQuery,filter) => {
+const escapeRegex = (value) => {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+export const filters = (taskQuery, filter, search) => {
     if (filter.status) {
         taskQuery.where('status').equals(filter.status)
     }
@@ -9,9 +13,28 @@ export const filters = (taskQuery,filter) => {
         taskQuery.where('category').equals(filter.category)
     }
     if (filter.title) {
-        taskQuery.where('title').equals(filter.title)
+        const title = escapeRegex(filter.title)
+
+        taskQuery
+            .where('title')
+            .regex(new RegExp(title, 'i'))
     }
     if (filter.description) {
-        taskQuery.where('description').equals(filter.description)
+        const description = escapeRegex(filter.description)
+
+        taskQuery
+            .where('description')
+            .regex(new RegExp(description, 'i'))
+    }
+    if (filter.isArchived !== undefined) {
+        taskQuery.where('isArchived').equals(filter.isArchived)
+    }
+    if (search) {
+        const escapedSearch = escapeRegex(search)
+        const searchRegex = new RegExp(escapedSearch, 'i')
+        taskQuery.or([
+            {title: searchRegex},
+            {description: searchRegex}
+        ])
     }
 }

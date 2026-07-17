@@ -16,18 +16,20 @@ const task = await createTask(req.body)
 export const getAllTasksController = async (req, res) => {
     const { page, perPage } = parsePaginationParams(req.query)
     const filter = parseFiltersFields(req.query)
-    const {sortOrder, sortBy,value} = parsedSort(req.query)
+    const {sortOrder, sortBy,search} = parsedSort(req.query)
     console.log(filter)
     const response = await getAllTask({
         page,
         perPage,
         filter,
         sortOrder,
-        sortBy
+        sortBy,
+        search
     })
     res.status(200).json({
         message: "Success",
-        data: response
+        data: response.tasks,
+        pagination: response.paginationData
     })
 }
 export const getTaskByIdController = async (req, res) => {

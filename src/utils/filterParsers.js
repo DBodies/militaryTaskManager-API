@@ -39,19 +39,30 @@ export const parseCategory = (category, defaultValue) => {
     return normalized
 }
 
+export const parseBoolean = (value) => {
+if(typeof value === 'boolean') return value
+    if (typeof value !== 'string') return undefined
+    const normalized = value.trim().toLowerCase()
+    if (normalized === 'true') return true
+    if (normalized === 'false') return false
+    return undefined
+}
+
 export const parseFiltersFields = (query) => {
-    const { title, description, status, priority, category } = query
+    const { title, description, status, priority, category, isArchived } = query
     const parsedTitle = parseString(title)
     const parsedDescription = parseString(description)
     const parsedStatus = parseStatus(status, 'pending')
     const parsedPriority = parsePriority(priority, 'medium')
     const parsedCategory = parseCategory(category, 'general')
+    const parsedIsArchived = parseBoolean(isArchived)
 
     return {
         title: parsedTitle,
         description: parsedDescription,
         status: parsedStatus,
         priority: parsedPriority,
-        category: parsedCategory
+        category: parsedCategory,
+        isArchived: parsedIsArchived
     }
 }
