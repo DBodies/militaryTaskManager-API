@@ -2,8 +2,8 @@ import dotenv from 'dotenv'
 import { getEnvVar } from './utils/getEnvVar.js'
 import express from 'express'
 import cors from 'cors'
-import healthRouter from './routes/health.routes.js'
 import taskRouter from './routes/taskRoutWrapper.js'
+import authRouter from './routes/auth.routes.js'
 import { notFoundHandler } from './middlewares/notFoundHandler.js'
 import { errorHandler } from './middlewares/errorHandler.js'
 
@@ -15,7 +15,7 @@ export const startServer = () => {
     app.use(express.json())
 const PORT = Number(getEnvVar("PORT", "5000")) 
 
-    app.use('/api/health', healthRouter)
+    app.use('/api/auth', authRouter)
     app.use('/api/tasks', taskRouter)
 
     app.use(errorHandler)
