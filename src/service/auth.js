@@ -1,6 +1,8 @@
 import createHttpError from "http-errors"
 import { User } from "../models/user.js"
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import { getEnvVar } from "../utils/getEnvVar.js"
 
 export const register = async (payload) => {
     const {name, email,password} = payload
@@ -17,13 +19,24 @@ export const register = async (payload) => {
 }
 export const login = async (payload) => {
     const { email, password } = payload
-    const userByEmail = await User.findOne({email})
-    if (!userByEmail) {
+    const user = await User.findOne({email})
+    if (!user) {
         throw createHttpError(401, 'Email or password is wrong')
     }
-    const comparePassword = await bcrypt.compare(password, userByEmail.password)
+    const comparePassword = await bcrypt.compare(password, user.password)
     if (!comparePassword) {
     throw createHttpError(401, 'Email or password is wrong')
     }
-    return UserByEmail
+    const accessToken = jwt.sign({
+        userId: user._id,
+        role: user.role
+    },
+        getEnvVar('JWT_SECRET'), {
+        expiresIn: getEnvVar('JWT_EXPIRES_IN')
+    })
+
+    return {
+        user,
+        accessToken
+    }
 }

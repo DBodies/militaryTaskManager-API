@@ -10,7 +10,6 @@ const taskSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required:true,
         maxlength: 1000,
         trim: true
     },
@@ -35,11 +34,15 @@ const taskSchema = new mongoose.Schema({
     },
     dueDate: {
         type: Date,
-        required: true,
     },
     isArchived: {
         type: Boolean,
         default: false
+    },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 },
     {timestamps: true}

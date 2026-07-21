@@ -1,5 +1,8 @@
 import { login, register } from "../service/auth.js"
+import { getEnvVar } from "../utils/getEnvVar.js"
+import dotenv from 'dotenv'
 
+dotenv.config()
 export const registerController = async (req, res) => {
     const user = req.body
     const response = await register(user)
@@ -10,10 +13,12 @@ export const registerController = async (req, res) => {
 }
 
 export const loginController = async (req, res) => {
-    const user = req.body
-    const response = await login(user)
+    const { accessToken, user} = await login(req.body)
     res.status(200).json({
         message: 'Logged in',
-        data: response
+        data: {
+            user,
+            accessToken
+        }
     })
 }

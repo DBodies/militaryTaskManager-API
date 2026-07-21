@@ -6,8 +6,13 @@ import { calculationParsedPagination, parsePaginationParams } from "../utils/par
 import { parseFiltersFields } from "../utils/filterParsers.js"
 import { parsedSort } from "../utils/parseSort.js"
 
-export const createTaskController = async (req,res) => {
-const task = await createTask(req.body)
+export const createTaskController = async (req, res) => {
+    const owner = req.user._id
+    const task = await createTask({
+        ...req.body,
+        owner
+    }
+    )
     res.status(201).json({
         message: "Success",
         data: task
@@ -24,7 +29,8 @@ export const getAllTasksController = async (req, res) => {
         filter,
         sortOrder,
         sortBy,
-        search
+        search,
+        owner: req.user._id
     })
     res.status(200).json({
         message: "Success",

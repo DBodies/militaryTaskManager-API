@@ -10,12 +10,13 @@ export const getAllTask = async ({
     filter = {},
     sortOrder = sortValue.ASC,
     sortBy = 'createdAt',
-    search = ''
+    search = '',
+    owner
 }) => {
     const limit = perPage
     const skip = (page - 1) * perPage
     const taskQuery = Task.find()
-    filters(taskQuery, filter, search)
+    filters(taskQuery, filter, search, owner)
     const count = await taskQuery.clone().countDocuments()
     const tasks = await taskQuery.clone().limit(limit).skip(skip).sort({[sortBy]:sortOrder}).exec()
     const paginationData = calculationParsedPagination(count, page,perPage)

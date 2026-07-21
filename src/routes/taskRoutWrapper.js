@@ -4,10 +4,12 @@ import {ctrlWrapper} from '../middlewares/ctrlWrapper.js'
 import { isValidId } from "../middlewares/isValidId.js";
 import { validateBody } from "../middlewares/validateBody.js";
 import { patchSchema, postSchema } from "../schemas/validationSchemaJoi.js";
+import { authMiddleware } from "../middlewares/authMiddlewares.js";
 
 
 const router = Router()
 
+router.use(authMiddleware)
 router.get('/', ctrlWrapper(getAllTasksController))
 
 router.get('/:taskId', isValidId,

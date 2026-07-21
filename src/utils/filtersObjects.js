@@ -37,4 +37,7 @@ export const filters = (taskQuery, filter, search) => {
             {description: searchRegex}
         ])
     }
+    if (owner) {
+        taskQuery.where('owner').equals('owner')
+    }
 }

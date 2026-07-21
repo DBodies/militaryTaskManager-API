@@ -6,6 +6,7 @@ import taskRouter from './routes/taskRoutWrapper.js'
 import authRouter from './routes/auth.routes.js'
 import { notFoundHandler } from './middlewares/notFoundHandler.js'
 import { errorHandler } from './middlewares/errorHandler.js'
+import userRoute from './routes/user.routes.js'
 
 dotenv.config()
 
@@ -17,6 +18,7 @@ const PORT = Number(getEnvVar("PORT", "5000"))
 
     app.use('/api/auth', authRouter)
     app.use('/api/tasks', taskRouter)
+    app.use('/api/users', userRoute)
 
     app.use(errorHandler)
     app.use(notFoundHandler)
