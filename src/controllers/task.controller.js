@@ -1,15 +1,14 @@
-import { isValidObjectId } from "mongoose"
-import { Task } from "../models/task.js"
-import { createTask, deleteById, getTaskById, updateById, upsertById,getAllTask, archivedTask } from "../service/CRUD.js"
+import { createTask, deleteById, getTaskById, updateById,getAllTask, archivedTask } from "../service/CRUD.js"
 import createHttpError from "http-errors"
-import { calculationParsedPagination, parsePaginationParams } from "../utils/parsePagination.js"
+import { parsePaginationParams } from "../utils/parsePagination.js"
 import { parseFiltersFields } from "../utils/filterParsers.js"
 import { parsedSort } from "../utils/parseSort.js"
 
 export const createTaskController = async (req, res) => {
     const owner = req.user._id
+    const updateData = req.body
     const task = await createTask({
-        ...req.body,
+        ...updateData,
         owner
     }
     )
@@ -18,11 +17,12 @@ export const createTaskController = async (req, res) => {
         data: task
     })
 }
+
 export const getAllTasksController = async (req, res) => {
     const { page, perPage } = parsePaginationParams(req.query)
     const filter = parseFiltersFields(req.query)
     const {sortOrder, sortBy,search} = parsedSort(req.query)
-    console.log(filter)
+    const owner = req.user._id
     const response = await getAllTask({
         page,
         perPage,
@@ -30,7 +30,7 @@ export const getAllTasksController = async (req, res) => {
         sortOrder,
         sortBy,
         search,
-        owner: req.user._id
+        owner
     })
     res.status(200).json({
         message: "Success",
@@ -38,9 +38,14 @@ export const getAllTasksController = async (req, res) => {
         pagination: response.paginationData
     })
 }
+
 export const getTaskByIdController = async (req, res) => {
     const { taskId } = req.params
-    const response = await getTaskById(taskId)
+    const owner = req.user._id
+    const response = await getTaskById({
+        taskId,
+        owner
+    })
     if (!response) {
         throw createHttpError(404, `Task with id ${taskId} not found`)
     }
@@ -49,24 +54,12 @@ export const getTaskByIdController = async (req, res) => {
         data: response,
     })
 }
-export const upsertByIdController = async (req, res, next) => {
+
+export const updateByIdController = async (req, res) => {
     const { taskId } = req.params
-    if(!taskId) {
-    throw createHttpError(400, `Invalid task ID - ${taskId}`)
-    }
-    const response = await upsertById(taskId, req.body, { upsert: true })
-    const status = response.isNew ? 201 : 200
-    res.status(status).json({
-        message: "Successfully",
-        data:response
-    })
-}
-export const updateByIdController = async (req, res, next) => {
-    const { taskId } = req.params
-    if (!taskId) {
-        next(createHttpError(400, `Task with ID ${taskId} wasn't found`))
-    }
-    const response = await updateById(taskId, req.body)
+    const owner = req.user._id
+    const updateData = req.body
+    const response = await updateById({ taskId, owner, updateData })
     if (!response) {
         throw createHttpError(404,'Task with current ID not found')
     }
@@ -77,17 +70,17 @@ export const updateByIdController = async (req, res, next) => {
 } 
 export const deleteByIdController = async (req, res) => {
     const { taskId } = req.params
-    const response = await deleteById(taskId)
+    const owner = req.user._id
+    const response = await deleteById({taskId, owner})
         if (!response) {
         throw createHttpError(404, `Task with id ${taskId} not found`)
     }
-    res.status(204).json({
-        message: 'Successfully deleted'
-    })
+    res.status(204).send()
 }
 export const archivedTaskController = async (req, res) => {
-    const {taskId} = req.params
-    const response = await archivedTask(taskId)
+    const { taskId } = req.params
+    const owner = req.user._id
+    const response = await archivedTask({taskId, owner})
     res.status(200).json({
         message: 'Successfully archived task',
         data: response

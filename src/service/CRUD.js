@@ -25,33 +25,24 @@ export const getAllTask = async ({
         paginationData
     }
 }
-export const createTask = async (payload) => {
-    const newTask = await new Task(payload)
+export const createTask = async (updateData) => {
+    const newTask = await new Task(updateData)
     await newTask.save()
     return newTask
 }
-export const getTaskById = async (taskId) => {
-    const taskById = await Task.findById(taskId)
+export const getTaskById = async ({taskId, owner}) => {
+    const taskById = await Task.findOne({
+        _id: taskId,
+        owner
+    })
     return taskById
 }
-export const upsertById = async(taskId, payload, options ={}) => {
-    const rawResult = await Task.findByIdAndUpdate({ _id: taskId },
-        payload, {
-            new: true,
-            runValidators: true,
-            ...options,
-            includeResultMetadata: true
-        }
-    )
-    if (!rawResult || !rawResult.value) return null
-    return {
-        task: rawResult.value,
-        isNew: Boolean(rawResult?.lastErrorObject?.upserted)
-    }
-}
-export const updateById = async (taskId, payload, options = {}) => {
-    const task = await Task.findByIdAndUpdate( taskId ,
-        payload,
+export const updateById = async ({taskId, owner, updateData, options = {}}) => {
+    const task = await Task.findOneAndUpdate({
+        _id: taskId,
+        owner
+    },
+        updateData,
         {
             new: true,
             runValidators: true,
@@ -61,12 +52,17 @@ export const updateById = async (taskId, payload, options = {}) => {
     if (!task) return null
     return task
 }
-export const deleteById = async (taskId) => {
-    const task = await Task.findByIdAndDelete(taskId)
+export const deleteById = async ({taskId, owner}) => {
+    const task = await Task.findOneAndDelete({
+        _id: taskId,
+        owner
+    })
     return task
 }
-export const archivedTask = async (taskId) => {
-    const task = await Task.findByIdAndUpdate(taskId,
+export const archivedTask = async ({taskId, owner}) => {
+    const task = await Task.findOneAndUpdate({
+        _id: taskId,
+        owner},
         { isArchived: true },
         {new: true})
     if (!task) {

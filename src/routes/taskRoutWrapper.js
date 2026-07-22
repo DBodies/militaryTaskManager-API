@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { archivedTaskController, createTaskController, deleteByIdController, getAllTasksController, getTaskByIdController, updateByIdController, upsertByIdController } from "../controllers/task.controller.js";
+import { archivedTaskController, createTaskController, deleteByIdController, getAllTasksController, getTaskByIdController, updateByIdController,  } from "../controllers/task.controller.js";
 import {ctrlWrapper} from '../middlewares/ctrlWrapper.js'
 import { isValidId } from "../middlewares/isValidId.js";
 import { validateBody } from "../middlewares/validateBody.js";
@@ -17,11 +17,6 @@ router.get('/:taskId', isValidId,
 
 router.post('/', validateBody(postSchema),
     ctrlWrapper(createTaskController))
-
-router.patch('/upsert/:taskId',
-    isValidId,
-    validateBody(patchSchema),
-    ctrlWrapper(upsertByIdController))
 
 router.patch('/:taskId', isValidId,
     validateBody(patchSchema),
