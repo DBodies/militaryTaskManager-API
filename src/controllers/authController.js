@@ -1,8 +1,5 @@
 import { login, register } from "../service/auth.js"
-import { getEnvVar } from "../utils/getEnvVar.js"
-import dotenv from 'dotenv'
 
-dotenv.config()
 export const registerController = async (req, res) => {
     const user = req.body
     const response = await register(user)

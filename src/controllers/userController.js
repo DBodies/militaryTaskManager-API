@@ -1,3 +1,6 @@
+import { getAllTask } from "../service/CRUD.js"
+import { parsePaginationParams } from "../utils/parsePagination.js"
+import { parsedSort } from "../utils/parseSort.js"
 
 export const userController = async (req, res) => {
     const user = req.user
@@ -11,8 +14,21 @@ export const userController = async (req, res) => {
         }
     })
 }
-export const adminController = async (req, res) => {
+export const getAllTasksAdminController = async (req, res) => {
+    const { page, perPage } = parsePaginationParams(req.query)
+    const filter = parseFiltersFields(req.query)
+    const {sortOrder, sortBy,search} = parsedSort(req.query)
+    const response = await getAllTask({
+        page,
+        perPage,
+        filter,
+        sortOrder,
+        sortBy,
+        search,
+    })
     res.status(200).json({
-        message: 'Admin access granted'
+        message: "Success",
+        data: response.tasks,
+        pagination: response.paginationData
     })
 }

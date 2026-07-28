@@ -70,3 +70,6 @@ export const archivedTask = async ({taskId, owner}) => {
     }
     return task
 }
+export const getAllTaskAdmin = async () => {
+    
+}

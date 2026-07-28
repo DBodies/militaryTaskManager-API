@@ -1,15 +1,11 @@
-import { HttpError } from "http-error"
 
-export const errorHandler = async (err, req, res, next) => {
-    if (err instanceof HttpError) {
-        res.status(err.status || 500).json({
-            status: err.status,
-            message: err.message,
+export const errorHandler =  (err, req, res, next) => {
+    const status = err.status || err.statusCode || 500
+    res.status(status).json({
+        status,
+        message: err.message || 'Internal server error',
+        ...(err.errors && {
+            errors: err.errors.map((error) => error.message)
         })
-        return
-    }
-    res.status(500).json({
-        status: err.status || 500,
-        message:  err.message || 'Internal Server Error',
     })
 }

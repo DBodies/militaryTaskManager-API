@@ -27,10 +27,7 @@ export const postSchema = Joi.object({
   dueDate: Joi.date()
     .iso()
     .required(),
-
-  isArchived: Joi.boolean()
-    .default(false),
-});
+}).unknown(false);
 
 export const patchSchema = Joi.object({
   title: Joi.string()
@@ -53,13 +50,4 @@ export const patchSchema = Joi.object({
 
   dueDate: Joi.date()
     .iso(),
-
-  isArchived: Joi.boolean(),
-}).min(1);
-
-export const taskIdSchema = Joi.object({
-  taskId: Joi.string()
-    .hex()
-    .length(24)
-    .required(),
-});
+}).unknown(false).min(1);
