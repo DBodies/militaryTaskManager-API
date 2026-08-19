@@ -2,7 +2,7 @@ const escapeRegex = (value) => {
     return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
-export const filters = (taskQuery, filter, search) => {
+export const filters = (taskQuery, filter, search, owner) => {
     if (filter.status) {
         taskQuery.where('status').equals(filter.status)
     }
@@ -38,6 +38,6 @@ export const filters = (taskQuery, filter, search) => {
         ])
     }
     if (owner) {
-        taskQuery.where('owner').equals('owner')
+        taskQuery.where('owner').equals(owner)
     }
 }

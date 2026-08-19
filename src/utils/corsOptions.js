@@ -9,3 +9,4 @@ export const corsOptions = {
         return cb(new Error('Not allowed by CORS'))
     }
 }
+

@@ -17,6 +17,8 @@ export const getAllTask = async ({
     const skip = (page - 1) * perPage
     const taskQuery = Task.find()
     filters(taskQuery, filter, search, owner)
+    console.log('OWNER:', owner)
+console.log('QUERY FILTER:', taskQuery.getFilter())
     const count = await taskQuery.clone().countDocuments()
     const tasks = await taskQuery.clone().limit(limit).skip(skip).sort({[sortBy]:sortOrder}).exec()
     const paginationData = calculationParsedPagination(count, page,perPage)

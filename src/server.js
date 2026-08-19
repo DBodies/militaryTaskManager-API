@@ -10,8 +10,14 @@ import userRoute from './routes/user.routes.js'
 import { authLimiter } from './utils/rateLimiter.js'
 import helmet from 'helmet'
 import { corsOptions } from './utils/corsOptions.js'
+import fs from 'fs'
+import YAML from 'yaml'
+import swaggerUi from 'swagger-ui-express'
 
 dotenv.config()
+
+const openApiFile = fs.readFileSync('./src/docs/openapi.yaml', 'utf8')
+const parsedOpenApi = YAML.parse(openApiFile)
 
 export const startServer = () => {
     const app = express()
@@ -24,6 +30,7 @@ export const startServer = () => {
     app.use('/api/auth', authLimiter,authRouter)
     app.use('/api/tasks', taskRouter)
     app.use('/api/users', userRoute)
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(parsedOpenApi))
 
     app.use(notFoundHandler)
     app.use(errorHandler)
