@@ -1,4 +1,4 @@
-export const parseString =  (numbers, defaultValue) => {
+export const parseString =  (numbers: unknown, defaultValue: number): number => {
     const isString = typeof numbers === 'string'
     if (!isString) return defaultValue
     const parsedNumbers = parseInt(numbers, 10)
@@ -7,7 +7,13 @@ export const parseString =  (numbers, defaultValue) => {
     }
     return parsedNumbers
 }
-export const parsePaginationParams =  (query) => {
+
+type SearchQueryParams = {
+    page?: unknown,
+    perPage?: unknown
+}
+
+export const parsePaginationParams =  (query:SearchQueryParams) => {
     const { page, perPage } = query
     const parsedPage = parseString(page, 1)
     const parsedPerPage = parseString(perPage, 10)
@@ -17,7 +23,16 @@ export const parsePaginationParams =  (query) => {
     }
 }
 
-export const calculationParsedPagination =  (count, page, perPage) => {
+type Pagination = {
+    page: number,
+    perPage: number,
+    totalItems: number,
+    hasNextPage: boolean,
+    hasPreviousPage: boolean,
+    totalPages: number
+}
+
+export const calculationParsedPagination =  (count: number, page:number, perPage:number):Pagination => {
     const totalPages = Math.ceil(count / perPage)
     return {
         page,
