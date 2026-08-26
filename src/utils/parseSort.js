@@ -1,14 +1,11 @@
 import { sortValue } from "../constants/index.js"
 
-// Доказать что сортОрдер и СортБай это стринги + ограничить на аск\деск.
-
-export const parseSortOrder = (sortOrder:unknown) => {
+export const parseSortOrder = (sortOrder) => {
     const isSortOrder = [sortValue.ASC, sortValue.DESC].includes(sortOrder)
     if (isSortOrder) return sortOrder
     return sortValue.DESC
 }
-
-export const parseSortBy = (sortBy:string) => {
+export const parseSortBy = (sortBy) => {
     const keysOfSort = [
         'createdAt',
         'updatedAt',
@@ -22,20 +19,14 @@ export const parseSortBy = (sortBy:string) => {
     return 'createdAt'
 }
 
-export const parseSearch = (search:unknown) => {
+export const parseSearch = (search) => {
     const isString = typeof search === 'string'
     if (!isString) return null
     const normalized = search.trim()
     return normalized
 }
 
-export type SortParams = {
-    sortOrder?: unknown,
-    sortBy?: unknown,
-    search?: unknown
-}
-
-export const parsedSort = (query:SortParams) => {
+export const parsedSort = (query) => {
     const { sortOrder, sortBy, search } = query
     const parsedSearchValue = parseSearch(search)
     const parsedSortOrder = parseSortOrder(sortOrder)

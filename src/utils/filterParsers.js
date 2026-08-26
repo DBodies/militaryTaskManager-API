@@ -1,17 +1,16 @@
 import createHttpError from "http-errors"
-import { TaskCategory, TaskStatus, TaskPriority } from "../types/task.js"
 
 
-export const parseString = (value: unknown, defaultValue:string) => {
+export const parseString = (value, defaultValue) => {
     const isString = typeof value === 'string'
     if (!isString) return defaultValue
     const normalized = value.trim().toLowerCase()
     return normalized
 }
 
-export const parseStatus = (status:unknown, defaultValue:string) => {
+export const parseStatus = (status, defaultValue) => {
     const allowed = ['pending', 'in_progress', 'completed', 'cancelled']
-    const normalized = parseString(status, "pending")
+    const normalized = parseString(status)
     if (normalized === undefined) {
         return undefined;
     }
@@ -19,9 +18,9 @@ export const parseStatus = (status:unknown, defaultValue:string) => {
         throw createHttpError(400, 'Please select the correct status')}
     return normalized
 }
-export const parsePriority = (priority:unknown, defaultValue:string) => {
+export const parsePriority = (priority, defaultValue) => {
     const allowed = ['low', 'medium', 'high', 'critical']
-    const normalized = parseString(priority, "medium")
+    const normalized = parseString(priority)
     if (normalized === undefined) {
         return undefined;
     }
@@ -29,9 +28,9 @@ export const parsePriority = (priority:unknown, defaultValue:string) => {
         throw createHttpError(400, 'Please select the correct priority')}
     return normalized
 }
-export const parseCategory = (category:unknown, defaultValue:string) => {
+export const parseCategory = (category, defaultValue) => {
     const allowed = ['general', 'training', 'logistics', 'maintenance', 'operation']
-    const normalized = parseString(category,"general")
+    const normalized = parseString(category)
     if (normalized === undefined) {
         return undefined;
     }
@@ -40,27 +39,19 @@ export const parseCategory = (category:unknown, defaultValue:string) => {
     return normalized
 }
 
-export const parseBoolean = (value:boolean) => {
+export const parseBoolean = (value) => {
 if(typeof value === 'boolean') return value
     if (typeof value !== 'string') return undefined
-    if (value === 'true') return true
-    if (value === 'false') return false
+    const normalized = value.trim().toLowerCase()
+    if (normalized === 'true') return true
+    if (normalized === 'false') return false
     return undefined
 }
 
-export interface FilerFields {
-    title?: string,
-    description?: string,
-    status: TaskStatus,
-    priority: TaskPriority,
-    category: TaskCategory,
-    isArchived: boolean
-}
-
-export const parseFiltersFields = (query:FilerFields) => {
+export const parseFiltersFields = (query) => {
     const { title, description, status, priority, category, isArchived } = query
-    const parsedTitle = parseString(title, "")
-    const parsedDescription = parseString(description, "")
+    const parsedTitle = parseString(title)
+    const parsedDescription = parseString(description)
     const parsedStatus = parseStatus(status, 'pending')
     const parsedPriority = parsePriority(priority, 'medium')
     const parsedCategory = parseCategory(category, 'general')
