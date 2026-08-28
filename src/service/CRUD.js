@@ -1,5 +1,5 @@
 import createHttpError from "http-errors";
-import { Task } from "../models/task.js";
+import { TaskModel } from "../models/task.js";
 import { calculationParsedPagination } from "../utils/parsePagination.js";
 import { filters } from "../utils/filtersObjects.js";
 import { sortValue } from "../constants/index.js";

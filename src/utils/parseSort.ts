@@ -1,8 +1,5 @@
 import { sortValue } from "../constants/index.js"
 
-// Доказать что сортОрдер и СортБай это стринги + ограничить на аск\деск.
-
-
 export const parseSortOrder = (sortOrder: unknown) => {
     const isString = typeof sortOrder === 'string'
     if (!isString) return undefined
@@ -27,9 +24,6 @@ export const parseSortBy = (sortBy: unknown): SortBy => {
     }
     return 'createdAt'
 }
-
-
-
 
 export const parseSearch = (search:unknown) => {
     const isString = typeof search === 'string'

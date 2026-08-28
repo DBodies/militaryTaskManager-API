@@ -1,6 +1,7 @@
-import mongoose from "mongoose";
+import {Schema, model, Types} from "mongoose";
+import { Task } from "../types/task.js";
 
-const taskSchema = new mongoose.Schema({
+const taskSchema = new Schema<Task>({
     title: {
         type: String,
         required: true,
@@ -19,7 +20,6 @@ const taskSchema = new mongoose.Schema({
         required: true,
         default: "pending"
     },
-    
     priority: {
         type: String,
         enum: ["low", "medium", "high", "critical"],
@@ -40,7 +40,7 @@ const taskSchema = new mongoose.Schema({
         default: false
     },
     owner: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     }
@@ -48,4 +48,4 @@ const taskSchema = new mongoose.Schema({
     {timestamps: true}
 )
 
-export const Task = mongoose.model('Task', taskSchema)
+export const TaskModel = model<Task>('Task', taskSchema)

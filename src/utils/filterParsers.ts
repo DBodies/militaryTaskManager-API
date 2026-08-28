@@ -1,27 +1,54 @@
 import createHttpError from "http-errors"
-import { TaskCategory, TaskStatus, TaskPriority } from "../types/task.js"
+import { TaskStatus } from "../types/task.js"
 
 
-export const parseString = (value: unknown, defaultValue:string) => {
+export const parseString = (value: unknown) => {
     const isString = typeof value === 'string'
-    if (!isString) return defaultValue
+    if (!isString) return undefined
     const normalized = value.trim().toLowerCase()
     return normalized
 }
 
-export const parseStatus = (status:unknown, defaultValue:string) => {
-    const allowed = ['pending', 'in_progress', 'completed', 'cancelled']
-    const normalized = parseString(status, "pending")
-    if (normalized === undefined) {
-        return undefined;
+const allowedStatuses = [
+    'pending',
+    'in_progress',
+    'completed',
+    'cancelled'
+] as const satisfies readonly TaskStatus[]
+
+const isTaskStatus = (value: string): value is TaskStatus => {
+    return (allowedStatuses as readonly string[]).includes(value)
+}
+export const parseStatus = (
+    status: unknown
+): TaskStatus | undefined => {
+    if (status === undefined || status === null) {
+        return undefined
     }
-    if (!allowed.includes(normalized)) {
-        throw createHttpError(400, 'Please select the correct status')}
+    if (typeof status !== 'string') {
+        throw createHttpError(
+            400,
+            'Please select the correct status'
+        )
+    }
+    const normalized = status.trim().toLowerCase()
+    if (!isTaskStatus(normalized)) {
+        throw createHttpError(
+            400,
+            'Please select the correct status'
+        )
+    }
     return normalized
 }
-export const parsePriority = (priority:unknown, defaultValue:string) => {
+
+
+
+
+
+
+export const parsePriority = (priority:unknown) => {
     const allowed = ['low', 'medium', 'high', 'critical']
-    const normalized = parseString(priority, "medium")
+    const normalized = parseString(priority)
     if (normalized === undefined) {
         return undefined;
     }
@@ -29,9 +56,9 @@ export const parsePriority = (priority:unknown, defaultValue:string) => {
         throw createHttpError(400, 'Please select the correct priority')}
     return normalized
 }
-export const parseCategory = (category:unknown, defaultValue:string) => {
+export const parseCategory = (category:unknown) => {
     const allowed = ['general', 'training', 'logistics', 'maintenance', 'operation']
-    const normalized = parseString(category,"general")
+    const normalized = parseString(category)
     if (normalized === undefined) {
         return undefined;
     }
@@ -40,30 +67,33 @@ export const parseCategory = (category:unknown, defaultValue:string) => {
     return normalized
 }
 
-export const parseBoolean = (value:boolean) => {
+export interface FilerFields {
+    title?: unknown,
+    description?: unknown,
+    status?: unknown,
+    priority?: unknown,
+    category?: unknown,
+    isArchived?: unknown,
+    sortOrder?: unknown,
+    sortBy?: unknown,
+    search?: unknown,
+    page?: unknown,
+    perPage?: unknown
+}
+export const parseBoolean = (value:unknown) => {
 if(typeof value === 'boolean') return value
-    if (typeof value !== 'string') return undefined
     if (value === 'true') return true
     if (value === 'false') return false
     return undefined
 }
 
-export interface FilerFields {
-    title?: string,
-    description?: string,
-    status: TaskStatus,
-    priority: TaskPriority,
-    category: TaskCategory,
-    isArchived: boolean
-}
-
 export const parseFiltersFields = (query:FilerFields) => {
     const { title, description, status, priority, category, isArchived } = query
-    const parsedTitle = parseString(title, "")
-    const parsedDescription = parseString(description, "")
-    const parsedStatus = parseStatus(status, 'pending')
-    const parsedPriority = parsePriority(priority, 'medium')
-    const parsedCategory = parseCategory(category, 'general')
+    const parsedTitle = parseString(title)
+    const parsedDescription = parseString(description)
+    const parsedStatus = parseStatus(status)
+    const parsedPriority = parsePriority(priority)
+    const parsedCategory = parseCategory(category)
     const parsedIsArchived = parseBoolean(isArchived)
 
     return {

@@ -1,15 +1,18 @@
+import { Types } from "mongoose"
+
 export type TaskStatus = | 'pending' | 'in_progress' | 'completed' | 'cancelled'
 export type TaskPriority = | 'low' | 'medium' | 'high' | 'critical'
 export type TaskCategory = | 'general' | 'training' | 'logistics' | 'maintenance' | "operation"
+export type ownerType = Types.ObjectId
 export interface Task  {
     title: string,
-    description: string,
+    description?: string,
     status: TaskStatus,
     priority: TaskPriority,
     category: TaskCategory,
-    dueDate: Date,
-    isArchived: boolean,
-    owner: string,
+    dueDate?: Date,
+    isArchived?: boolean,
+    owner: ownerType,
     createdAt: Date,
     updatedAt: Date
 }
@@ -20,8 +23,6 @@ export interface CreatedTaskDTO  {
     priority: TaskPriority,
     category: TaskCategory,
     dueDate?: Date,
-    isArchived: boolean,
-    owner?: string,
 }
 export interface UpdatedTaskDTO  {
     title?: string,
@@ -30,6 +31,5 @@ export interface UpdatedTaskDTO  {
     priority?: TaskPriority,
     category?: TaskCategory,
     dueDate?: Date,
-    isArchived?: boolean,
-    owner?: string,
+    owner?: ownerType
 }
