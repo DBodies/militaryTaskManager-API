@@ -1,8 +1,8 @@
 import createHttpError from "http-errors"
-import { TaskStatus } from "../types/task.js"
+import { TaskStatus, TaskPriority, TaskCategory } from "../types/task.js"
 
 
-export const parseString = (value: unknown) => {
+export const parseString = (value: unknown): string | undefined => {
     const isString = typeof value === 'string'
     if (!isString) return undefined
     const normalized = value.trim().toLowerCase()
@@ -15,7 +15,6 @@ const allowedStatuses = [
     'completed',
     'cancelled'
 ] as const satisfies readonly TaskStatus[]
-
 const isTaskStatus = (value: string): value is TaskStatus => {
     return (allowedStatuses as readonly string[]).includes(value)
 }
@@ -41,31 +40,52 @@ export const parseStatus = (
     return normalized
 }
 
-
-
-
-
-
-export const parsePriority = (priority:unknown) => {
-    const allowed = ['low', 'medium', 'high', 'critical']
-    const normalized = parseString(priority)
-    if (normalized === undefined) {
-        return undefined;
+const allowedPriorityStatus = [
+    'low', 
+    'medium' 
+    ,'high' , 
+    'critical'
+] as const satisfies readonly TaskPriority[]
+const isTaskPriority = (value: string): value is TaskPriority => {
+    return (allowedPriorityStatus as readonly string[]).includes(value)
+}
+export const parsePriority = (priority:unknown):TaskPriority | undefined => {
+    if(priority === undefined || priority === null) {
+        return undefined
     }
-    if (!allowed.includes(normalized)){
-        throw createHttpError(400, 'Please select the correct priority')}
+    if(typeof priority !== 'string') {
+        throw createHttpError(404,' Please set the correct status')
+    }
+    const normalized = priority.trim().toLowerCase()
+    if(!isTaskPriority(normalized)) {
+        throw createHttpError(404, ' Please select the correct prioity type')
+    }
     return normalized
 }
-export const parseCategory = (category:unknown) => {
-    const allowed = ['general', 'training', 'logistics', 'maintenance', 'operation']
-    const normalized = parseString(category)
-    if (normalized === undefined) {
-        return undefined;
+
+const allowedTaskCategory = [
+    'general',
+    'training',
+    'logistics', 
+    'maintenance',
+    "operation"
+] as const satisfies readonly TaskCategory[]
+const isTaskkCategory = (value: string): value is TaskCategory => {
+    return (allowedTaskCategory as readonly string[]).includes(value)
+}
+export const parseCategory = (category:unknown):TaskCategory | undefined => {
+    if(category === undefined || category === null) {
+    return undefined} 
+    if(typeof category !== 'string' ) {
+        throw createHttpError(404, 'Please set the correct category')
     }
-    if (!allowed.includes(normalized)) {
-        throw createHttpError(400, 'Please select the correct priority')}
+    const normalized = category.trim().toLowerCase()
+    if(!isTaskkCategory(normalized)) {
+        throw createHttpError(404, 'Please select the correct category`s type')
+    }
     return normalized
 }
+
 
 export interface FilerFields {
     title?: unknown,
@@ -80,7 +100,7 @@ export interface FilerFields {
     page?: unknown,
     perPage?: unknown
 }
-export const parseBoolean = (value:unknown) => {
+export const parseBoolean = (value:unknown): boolean | undefined => {
 if(typeof value === 'boolean') return value
     if (value === 'true') return true
     if (value === 'false') return false

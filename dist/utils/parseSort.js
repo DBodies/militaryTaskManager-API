@@ -1,19 +1,23 @@
 import { sortValue } from "../constants/index.js";
 export const parseSortOrder = (sortOrder) => {
+    const isString = typeof sortOrder === 'string';
+    if (!isString)
+        return undefined;
     const isSortOrder = [sortValue.ASC, sortValue.DESC].includes(sortOrder);
     if (isSortOrder)
         return sortOrder;
     return sortValue.DESC;
 };
+export const keysOfSortBy = [
+    'createdAt',
+    'updatedAt',
+    'dueDate',
+    'status',
+    'priority',
+];
 export const parseSortBy = (sortBy) => {
-    const keysOfSort = [
-        'createdAt',
-        'updatedAt',
-        'dueDate',
-        'status',
-        'priority',
-    ];
-    if (keysOfSort.includes(sortBy)) {
+    if (typeof sortBy === 'string' &&
+        keysOfSortBy.includes(sortBy)) {
         return sortBy;
     }
     return 'createdAt';

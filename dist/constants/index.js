@@ -1,4 +1,4 @@
 export const sortValue = {
-    ASC: 'asc',
-    DESC: 'desc'
+    ASC: 'ASC',
+    DESC: 'DESC'
 };
