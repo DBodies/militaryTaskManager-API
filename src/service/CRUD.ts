@@ -1,8 +1,17 @@
 import createHttpError from "http-errors";
 import { TaskModel } from "../models/task.js";
-import { calculationParsedPagination } from "../utils/parsePagination.js";
+import { calculationParsedPagination, Pagination } from "../utils/parsePagination.js";
 import { filters } from "../utils/filtersObjects.js";
 import { sortValue } from "../constants/index.js";
+import { CreatedTaskDTO, Task } from "../types/task.js";
+import { Types, QueryFilter } from "mongoose";
+
+
+
+type CreateTaskServiseParams = 
+    CreatedTaskDTO
+    owner: Types.ObjectId
+
 
 export const getAllTask = async ({
     page = 1,
@@ -12,15 +21,18 @@ export const getAllTask = async ({
     sortBy = 'createdAt',
     search = '',
     owner
-}) => {
+}: CreateTaskServiseParams):Promise<{
+    tasks: Task[];
+    paginationData: Pagination;
+}> => {
     const limit = perPage
     const skip = (page - 1) * perPage
-    const taskQuery = Task.find()
+    const taskQuery:QueryFilter<Task> = {
+        ...filter,
+        owner
+    }
     filters(taskQuery, filter, search, owner)
-    console.log('OWNER:', owner)
-console.log('QUERY FILTER:', taskQuery.getFilter())
-    const count = await taskQuery.clone().countDocuments()
-    const tasks = await taskQuery.clone().limit(limit).skip(skip).sort({[sortBy]:sortOrder}).exec()
+
     const paginationData = calculationParsedPagination(count, page,perPage)
     return {
         tasks,
