@@ -4,11 +4,11 @@ import { calculationParsedPagination, Pagination } from "../utils/parsePaginatio
 import { filters } from "../utils/filtersObjects.js";
 import { sortValue } from "../constants/index.js";
 import { CreatedTaskDTO, Task } from "../types/task.js";
-import { Types, QueryFilter } from "mongoose";
+import { Types, QueryFilter, HydratedDocument } from "mongoose";
 
 
 
-type CreateTaskServiseParams = 
+type CreateTaskServiceParams = 
     CreatedTaskDTO
     owner: Types.ObjectId
 
@@ -21,7 +21,7 @@ export const getAllTask = async ({
     sortBy = 'createdAt',
     search = '',
     owner
-}: CreateTaskServiseParams):Promise<{
+}: CreateTaskServiceParams):Promise<{
     tasks: Task[];
     paginationData: Pagination;
 }> => {
@@ -32,20 +32,32 @@ export const getAllTask = async ({
         owner
     }
     filters(taskQuery, filter, search, owner)
-
+    const [count, tasks] = await Promise.all([
+        TaskModel.countDocuments(taskQuery),
+        TaskModel.find(taskQuery)
+        .sort({[sortBy]:sortOrder})
+        .skip(skip)
+        .limit(limit)
+        .lean()
+    ])
     const paginationData = calculationParsedPagination(count, page,perPage)
     return {
         tasks,
         paginationData
     }
 }
-export const createTask = async (updateData) => {
-    const newTask = await new Task(updateData)
-    await newTask.save()
-    return newTask
+export const createTask = (updateData:CreateTaskServiceParams):Promise<HydratedDocument<Task>> => {
+    return  TaskModel.create(updateData)
 }
-export const getTaskById = async ({taskId, owner}) => {
-    const taskById = await Task.findOne({
+type GetTaskByIdService = {
+    taskId: string,
+    owner: Types.ObjectId
+}
+export const getTaskById = async ({taskId, owner}:GetTaskByIdService):Promise<Task | undefined> => {
+    if(!taskId) {
+        throw createHttpError(404, 'Task id not found')
+    }
+    const taskById = await TaskModel.findOne({
         _id: taskId,
         owner
     })
