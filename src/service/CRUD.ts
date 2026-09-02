@@ -3,14 +3,8 @@ import { TaskModel } from "../models/task.js";
 import { calculationParsedPagination, Pagination } from "../utils/parsePagination.js";
 import { filters } from "../utils/filtersObjects.js";
 import { sortValue } from "../constants/index.js";
-import { CreatedTaskDTO, Task } from "../types/task.js";
-import { Types, QueryFilter, HydratedDocument } from "mongoose";
-
-
-
-type CreateTaskServiceParams = 
-    CreatedTaskDTO
-    owner: Types.ObjectId
+import { GetAllTaskParams, Task, TaskOwnerParams, GetUpdateById, CreateTaskServiceParams, } from "../types/task.js";
+import { QueryFilter, HydratedDocument } from "mongoose";
 
 
 export const getAllTask = async ({
@@ -21,7 +15,7 @@ export const getAllTask = async ({
     sortBy = 'createdAt',
     search = '',
     owner
-}: CreateTaskServiceParams):Promise<{
+}: GetAllTaskParams):Promise<{
     tasks: Task[];
     paginationData: Pagination;
 }> => {
@@ -46,25 +40,24 @@ export const getAllTask = async ({
         paginationData
     }
 }
+
 export const createTask = (updateData:CreateTaskServiceParams):Promise<HydratedDocument<Task>> => {
     return  TaskModel.create(updateData)
 }
-type GetTaskByIdService = {
-    taskId: string,
-    owner: Types.ObjectId
-}
-export const getTaskById = async ({taskId, owner}:GetTaskByIdService):Promise<Task | undefined> => {
-    if(!taskId) {
-        throw createHttpError(404, 'Task id not found')
-    }
+
+export const getTaskById = async ({taskId, owner}:TaskOwnerParams):Promise<HydratedDocument<Task>> => {
     const taskById = await TaskModel.findOne({
         _id: taskId,
         owner
     })
+        if(!taskById) {
+        throw createHttpError(404, 'Task id not found')
+    }
     return taskById
 }
-export const updateById = async ({taskId, owner, updateData, options = {}}) => {
-    const task = await Task.findOneAndUpdate({
+
+export const updateById = async ({taskId, owner, updateData, options = {}}: GetUpdateById):Promise<HydratedDocument<Task>> => {
+    const task = await TaskModel.findOneAndUpdate({
         _id: taskId,
         owner
     },
@@ -75,18 +68,22 @@ export const updateById = async ({taskId, owner, updateData, options = {}}) => {
             ...options
         }
     )
-    if (!task) return null
+    if (!task) {
+        throw createHttpError(404, 'Can`t update the task')
+    }
     return task
 }
-export const deleteById = async ({taskId, owner}) => {
-    const task = await Task.findOneAndDelete({
+export const deleteById = async ({taskId, owner}:TaskOwnerParams): Promise<void> => {
+    const task = await TaskModel.findOneAndDelete({
         _id: taskId,
         owner
     })
-    return task
+    if (!task) {
+        throw createHttpError(404, 'task not found')
+    }
 }
-export const archivedTask = async ({taskId, owner}) => {
-    const task = await Task.findOneAndUpdate({
+export const archivedTask = async ({taskId, owner}:TaskOwnerParams): Promise<HydratedDocument<Task>> => {
+    const task = await TaskModel.findOneAndUpdate({
         _id: taskId,
         owner},
         { isArchived: true },

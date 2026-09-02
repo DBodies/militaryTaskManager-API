@@ -5,9 +5,9 @@ import { FilerFields, parseFiltersFields } from "../utils/filterParsers.js"
 import { parsedSort } from "../utils/parseSort.js"
 import type { Request, Response } from "express"
 import { AuthenticateUser } from "../middlewares/authMiddlewares.js"
-import { Task, UpdatedTaskDTO } from "../types/task.js"
+import { CreatedTaskDTO, Task, UpdatedTaskDTO } from "../types/task.js"
 
-export const createTaskController = async (req: Request<{}, {}, UpdatedTaskDTO>, res: Response) => {
+export const createTaskController = async (req: Request<{}, {}, CreatedTaskDTO>, res: Response) => {
     if (!req.user) {
         return res.status(401).json({
             message: 'Unauthorized'
@@ -105,18 +105,16 @@ export const updateByIdController = async (req: Request<TaskParams, {}, UpdatedT
         data: response
     })
 } 
-export const deleteByIdController = async (req: Request<TaskParams, {}, Task>, res: Response) => {
+export const deleteByIdController = async (req: Request<TaskParams, {}, Task>, res: Response): Promise<void> => {
     if (!req.user) {
-        return res.status(401).json({
+        res.status(401).json({
             message: 'Unauthorized'
         })
+        return
     }
     const { taskId } = req.params
     const owner = req.user._id
-    const response = await deleteById({taskId, owner})
-        if (!response) {
-        throw createHttpError(404, `Task with id ${taskId} not found`)
-    }
+    await deleteById({ taskId, owner })
     res.status(204).send()
 }
 export const archivedTaskController = async (req: Request<TaskParams, {}, Task>, res: Response) => {

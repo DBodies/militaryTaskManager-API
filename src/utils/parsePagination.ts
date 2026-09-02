@@ -1,3 +1,4 @@
+
 export const parseString =  (numbers: unknown, defaultValue: number): number => {
     const isString = typeof numbers === 'string'
     if (!isString) return defaultValue
@@ -23,7 +24,7 @@ export const parsePaginationParams =  (query:SearchQueryParams) => {
     }
 }
 
-type Pagination = {
+export type Pagination = {
     page: number,
     perPage: number,
     totalItems: number,
@@ -31,6 +32,8 @@ type Pagination = {
     hasPreviousPage: boolean,
     totalPages: number
 }
+
+
 
 export const calculationParsedPagination =  (count: number, page:number, perPage:number):Pagination => {
     const totalPages = Math.ceil(count / perPage)

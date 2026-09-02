@@ -1,12 +1,15 @@
-import { sortValue } from "../constants/index.js"
+import { sortValue, SortOrder } from "../constants/index.js"
 
-export const parseSortOrder = (sortOrder: unknown) => {
-    const isString = typeof sortOrder === 'string'
-    if (!isString) return undefined
-    const isSortOrder = [sortValue.ASC, sortValue.DESC].includes(sortOrder)
-    if (isSortOrder) return sortOrder
-    return sortValue.DESC
-}
+export const parseSortOrder = (sortOrder: unknown): SortOrder => {
+  if (
+    sortOrder === sortValue.ASC ||
+    sortOrder === sortValue.DESC
+  ) {
+    return sortOrder;
+  }
+
+  return sortValue.DESC;
+};
 
 export const keysOfSortBy = [
     'createdAt',

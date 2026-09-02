@@ -1,4 +1,6 @@
-import { Types } from "mongoose"
+import { QueryFilter, Types } from "mongoose"
+import { SortBy } from "../utils/parseSort.js"
+import { SortOrder } from "../constants/index.js"
 
 export type TaskStatus = | 'pending' | 'in_progress' | 'completed' | 'cancelled'
 export type TaskPriority = | 'low' | 'medium' | 'high' | 'critical'
@@ -31,5 +33,27 @@ export interface UpdatedTaskDTO  {
     priority?: TaskPriority,
     category?: TaskCategory,
     dueDate?: Date,
-    owner?: ownerType
+}
+export type GetAllTaskParams = {
+    page?: number,
+    perPage?: number,
+    filter?: QueryFilter<Task>,
+    sortOrder?: SortOrder
+    sortBy?: SortBy,
+    search?: string,
+    owner: Types.ObjectId
+}
+export type CreateTaskServiceParams = CreatedTaskDTO & {
+  owner: Types.ObjectId;
+};
+
+export type TaskOwnerParams = {
+        taskId: string,
+        owner: Types.ObjectId
+}
+    export type GetUpdateById = {
+        taskId: string,
+        owner: Types.ObjectId,
+        updateData: UpdatedTaskDTO,
+        options?: {}
 }
