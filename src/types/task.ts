@@ -57,3 +57,7 @@ export type TaskOwnerParams = {
         updateData: UpdatedTaskDTO,
         options?: {}
 }
+export type GetAllTaskAdminParams = Omit<GetAllTaskParams, 'owner'>
+export type GetAllTaskBaseParams = GetAllTaskAdminParams & {
+    owner?: ownerType
+}

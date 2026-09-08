@@ -3,29 +3,27 @@ import { TaskModel } from "../models/task.js";
 import { calculationParsedPagination, Pagination } from "../utils/parsePagination.js";
 import { filters } from "../utils/filtersObjects.js";
 import { sortValue } from "../constants/index.js";
-import { GetAllTaskParams, Task, TaskOwnerParams, GetUpdateById, CreateTaskServiceParams, } from "../types/task.js";
+import { GetAllTaskParams, Task, TaskOwnerParams, GetUpdateById, CreateTaskServiceParams, GetAllTaskAdminParams, GetAllTaskBaseParams, } from "../types/task.js";
 import { QueryFilter, HydratedDocument } from "mongoose";
 
-
-export const getAllTask = async ({
+const getAllTaskBase = async ({
     page = 1,
     perPage = 10,
     filter = {},
     sortOrder = sortValue.ASC,
     sortBy = 'createdAt',
     search = '',
-    owner
-}: GetAllTaskParams):Promise<{
-    tasks: Task[];
-    paginationData: Pagination;
-}> => {
+    owner }: GetAllTaskBaseParams): Promise<{
+        tasks: Task[],
+        paginationData: Pagination
+    }> => {
     const limit = perPage
     const skip = (page - 1) * perPage
-    const taskQuery:QueryFilter<Task> = {
-        ...filter,
-        owner
+    const taskQuery: QueryFilter<Task> = {}
+    if (owner) {
+        taskQuery.owner = owner
     }
-    filters(taskQuery, filter, search, owner)
+    filters(taskQuery, filter, search)
     const [count, tasks] = await Promise.all([
         TaskModel.countDocuments(taskQuery),
         TaskModel.find(taskQuery)
@@ -39,6 +37,14 @@ export const getAllTask = async ({
         tasks,
         paginationData
     }
+    }
+
+export const getAllTask = async (params: GetAllTaskParams) => {
+    return getAllTaskBase(params)
+}
+    
+export const getAllTaskAdmin = (params: GetAllTaskAdminParams) => {
+    return getAllTaskBase(params)
 }
 
 export const createTask = (updateData:CreateTaskServiceParams):Promise<HydratedDocument<Task>> => {
@@ -92,7 +98,4 @@ export const archivedTask = async ({taskId, owner}:TaskOwnerParams): Promise<Hyd
         throw createHttpError(404, 'task not found')
     }
     return task
-}
-export const getAllTaskAdmin = async () => {
-    
 }

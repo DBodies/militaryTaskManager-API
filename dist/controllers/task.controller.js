@@ -88,16 +88,14 @@ export const updateByIdController = async (req, res) => {
 };
 export const deleteByIdController = async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({
+        res.status(401).json({
             message: 'Unauthorized'
         });
+        return;
     }
     const { taskId } = req.params;
     const owner = req.user._id;
-    const response = await deleteById({ taskId, owner });
-    if (!response) {
-        throw createHttpError(404, `Task with id ${taskId} not found`);
-    }
+    await deleteById({ taskId, owner });
     res.status(204).send();
 };
 export const archivedTaskController = async (req, res) => {
