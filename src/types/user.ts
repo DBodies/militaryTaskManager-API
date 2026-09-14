@@ -1,5 +1,5 @@
 export type UserRole = | "user" | 'admin'
-export interface User {
+export interface UserInterface {
     name: string,
     email: string,
     password: string,
@@ -7,3 +7,12 @@ export interface User {
     createdAt: Date,
     updatedAt: Date
 }
+export type SafeUser = {
+    name: string,
+    email: string,
+}
+export type UserLoginResult = {
+    user: SafeUser,
+    accessToken: string
+}
+

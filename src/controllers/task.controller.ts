@@ -4,8 +4,8 @@ import { parsePaginationParams } from "../utils/parsePagination.js"
 import { FilerFields, parseFiltersFields } from "../utils/filterParsers.js"
 import { parsedSort } from "../utils/parseSort.js"
 import type { Request, Response } from "express"
-import { AuthenticateUser } from "../middlewares/authMiddlewares.js"
 import { CreatedTaskDTO, Task, UpdatedTaskDTO } from "../types/task.js"
+import { AuthenticateUser } from "../middlewares/authMiddlewares.js"
 
 export const createTaskController = async (req: Request<{}, {}, CreatedTaskDTO>, res: Response) => {
     if (!req.user) {
