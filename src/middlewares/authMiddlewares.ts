@@ -5,8 +5,8 @@ import jwt from 'jsonwebtoken'
 import { Response, Request, NextFunction } from "express"
 import type { Types } from "mongoose";
 import { UserRole } from "../types/user.js"
-import { string } from "joi"
-import { create } from "node:domain"
+import { isAccessTokenPayload } from "../types/auth.js"
+
 
 export type AuthenticateUser = {
     _id: Types.ObjectId,
@@ -16,7 +16,7 @@ export type AuthenticateUser = {
 }
 
 
-export const authMiddleware = async (req: Request, res: Response, next: NextFunction):Promise<void> => {
+export const authMiddleware = async (req: Request, _res: Response, next: NextFunction):Promise<void> => {
     const authHeader = req.headers.authorization
     if (!authHeader) {
         next(createHttpError(401, 'Authorization header is missing'))
@@ -32,10 +32,10 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         payload = jwt.verify(token, getEnvVar('JWT_SECRET'))
         
     } catch (err) {
-        next(createHttpError(401, 'Token is missing or expired'))
+        next(createHttpError(401, "Invalid or expired token"))
         return
     }
-    if (typeof payload !== 'object' || typeof payload.userId !== 'string') {
+    if(!isAccessTokenPayload(payload)) {
         next(createHttpError(401, 'Provide the correct payload'))
         return
     }
@@ -46,7 +46,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
             return
         }
         req.user = {
-            _id: payload._id,
+            _id: user._id,
             name: user.name,
             email: user.email,
             role: user.role,

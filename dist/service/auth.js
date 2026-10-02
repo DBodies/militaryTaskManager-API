@@ -32,8 +32,12 @@ export const login = async (payload) => {
     }, getEnvVar('JWT_SECRET'), {
         expiresIn: getEnvVar('JWT_EXPIRES_IN')
     });
+    const safeUser = {
+        name: user.name,
+        email: user.email
+    };
     return {
-        user,
+        user: safeUser,
         accessToken
     };
 };

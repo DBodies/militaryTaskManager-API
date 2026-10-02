@@ -6,9 +6,10 @@ import { sortValue } from "../constants/index.js";
 const getAllTaskBase = async ({ page = 1, perPage = 10, filter = {}, sortOrder = sortValue.ASC, sortBy = 'createdAt', search = '', owner }) => {
     const limit = perPage;
     const skip = (page - 1) * perPage;
-    const taskQuery = {
-        owner
-    };
+    const taskQuery = {};
+    if (owner) {
+        taskQuery.owner = owner;
+    }
     filters(taskQuery, filter, search);
     const [count, tasks] = await Promise.all([
         TaskModel.countDocuments(taskQuery),
@@ -27,7 +28,7 @@ const getAllTaskBase = async ({ page = 1, perPage = 10, filter = {}, sortOrder =
 export const getAllTask = async (params) => {
     return getAllTaskBase(params);
 };
-export const getAllTaskAdminParams = (params) => {
+export const getAllTaskAdmin = (params) => {
     return getAllTaskBase(params);
 };
 export const createTask = (updateData) => {

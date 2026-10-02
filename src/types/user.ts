@@ -10,6 +10,7 @@ export interface UserInterface {
 export type SafeUser = {
     name: string,
     email: string,
+    role?: UserRole
 }
 export type UserLoginResult = {
     user: SafeUser,
