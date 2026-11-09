@@ -1,17 +1,16 @@
-import { NextFunction, Request, RequestHandler, Response } from "express"
+import type { Request, Response, RequestHandler } from 'express';
 
-type controller = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => Promise<void>
-
-export const ctrlWrapper = (controller:controller):RequestHandler => {
-    return async (req:Request,res:Response,next:NextFunction):Promise<void> => {
+export const ctrlWrapper = <Params, ResBody, ReqBody, ReqQuery>(
+    controller: (
+        req: Request<Params, ResBody, ReqBody, ReqQuery>,
+        res: Response<ResBody>
+    ) => Promise<void>
+): RequestHandler<Params, ResBody, ReqBody, ReqQuery> => {
+    return async (req, res, next) => {
         try {
-            await controller(req,res,next)
-        } catch (err:unknown) {
-            next(err)
+            await controller(req, res);
+        } catch (error: unknown) {
+            next(error);
         }
-    }
-}
+    };
+};

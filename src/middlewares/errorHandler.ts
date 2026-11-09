@@ -10,11 +10,11 @@ return (
      typeof value === 'object' && 
      value !== null &&
      "message" in value &&
-     typeof typeof value.message === 'string'
+     typeof  value.message === 'string'
 )
 }
 
-const errorHandler = (err:unknown,req:Request,res:Response,next:NextFunction):void => {
+export const errorHandler = (err:unknown,req:Request,res:Response,next:NextFunction):void => {
     if(res.headersSent) {
         next(err)
         return
@@ -23,7 +23,15 @@ const errorHandler = (err:unknown,req:Request,res:Response,next:NextFunction):vo
         res.status(500).json({
             message: 'Internal server error'
         })
+        return
     }
     const status = err.status
-    const details = err.message
+    const details: unknown = err.errors
+
+    const errors = Array.isArray(details) ? details.filter(isErrorDetails).map((detail) => detail.message) : undefined
+    res.status(status).json({
+        status,
+        message: status >= 500 ? 'Internal server error' : err.message,
+        ...(status < 500 && errors?.length ? {errors} : {} )
+    })
 }

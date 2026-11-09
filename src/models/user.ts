@@ -1,6 +1,7 @@
 import  mongoose from "mongoose";
+import { UserInterface } from "../types/user.js";
 
-export const userSchema = new mongoose.Schema({
+export const userSchema = new mongoose.Schema<UserInterface>({
     name: {
         type: String,
         required: true,
@@ -33,4 +34,4 @@ userSchema.methods.toJSON = function () {
     delete obj.password
     return obj
 }
-export const User = mongoose.model('User', userSchema)
+export const User = mongoose.model<UserInterface>('User', userSchema)

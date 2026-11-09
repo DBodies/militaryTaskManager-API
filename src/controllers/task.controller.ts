@@ -7,11 +7,12 @@ import type { Request, Response } from "express"
 import { CreatedTaskDTO, Task, UpdatedTaskDTO } from "../types/task.js"
 import { AuthenticateUser } from "../middlewares/authMiddlewares.js"
 
-export const createTaskController = async (req: Request<{}, {}, CreatedTaskDTO>, res: Response) => {
+export const createTaskController = async (req: Request<{}, {}, CreatedTaskDTO>, res: Response):Promise<void> => {
     if (!req.user) {
-        return res.status(401).json({
+        res.status(401).json({
             message: 'Unauthorized'
         })
+        return
     }
     const owner = req.user._id
     const updateData = req.body
@@ -26,11 +27,12 @@ export const createTaskController = async (req: Request<{}, {}, CreatedTaskDTO>,
     })
 }
 
-export const getAllTasksController = async (req: Request<{}, {}, Task, FilerFields>, res: Response) => {
+export const getAllTasksController = async (req: Request<{}, {}, Task, FilerFields>, res: Response):Promise<void> => {
         if (!req.user) {
-        return res.status(401).json({
+         res.status(401).json({
             message: 'Unauthorized'
         })
+        return
     }
     const { page, perPage } = parsePaginationParams(req.query)
     const filter = parseFiltersFields(req.query)
@@ -66,11 +68,12 @@ declare global {
     }
 }
 export {}
-export const getTaskByIdController = async (req: Request<TaskParams, {}, {}>, res: Response) => {
+export const getTaskByIdController = async (req: Request<TaskParams, {}, {}>, res: Response):Promise<void> => {
     if (!req.user) {
-        return res.status(401).json({
+         res.status(401).json({
             message: 'Unauthorized'
         })
+        return
     }
     const { taskId } = req.params
     const owner = req.user._id
@@ -87,11 +90,12 @@ export const getTaskByIdController = async (req: Request<TaskParams, {}, {}>, re
     })
 }
 
-export const updateByIdController = async (req: Request<TaskParams, {}, UpdatedTaskDTO>, res: Response) => {
+export const updateByIdController = async (req: Request<TaskParams, {}, UpdatedTaskDTO>, res: Response):Promise<void> => {
       if (!req.user) {
-    return res.status(401).json({
+    res.status(401).json({
       message: "Unauthorized",
     });
+    return 
   }
     const { taskId } = req.params
         const updateData = req.body
@@ -117,11 +121,12 @@ export const deleteByIdController = async (req: Request<TaskParams, {}, Task>, r
     await deleteById({ taskId, owner })
     res.status(204).send()
 }
-export const archivedTaskController = async (req: Request<TaskParams, {}, Task>, res: Response) => {
+export const archivedTaskController = async (req: Request<TaskParams, {}, Task>, res: Response):Promise<void> => {
     if (!req.user) {
-        return res.status(401).json({
+         res.status(401).json({
             message: 'Unauthorized'
         })
+        return
     }
     const { taskId } = req.params
     const owner = req.user._id

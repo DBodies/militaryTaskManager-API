@@ -10,23 +10,23 @@ import { authMiddleware } from "../middlewares/authMiddlewares.js";
 const router = Router()
 
 router.use(authMiddleware)
-router.get('/', ctrlWrapper(getAllTasksController))
+router.get('/', getAllTasksController)
 
 router.get('/:taskId', isValidId,
-    ctrlWrapper(getTaskByIdController))
+    getTaskByIdController)
 
 router.post('/', validateBody(postSchema),
-    ctrlWrapper(createTaskController))
+    createTaskController)
 
 router.patch('/:taskId', isValidId,
     validateBody(patchSchema),
-    ctrlWrapper(updateByIdController))
+    updateByIdController)
 
 router.patch('/:taskId/archive', isValidId,
-    ctrlWrapper(archivedTaskController))
+    archivedTaskController)
 
 router.delete('/:taskId',
     isValidId,
-    ctrlWrapper(deleteByIdController))
+    deleteByIdController)
 
 export default router

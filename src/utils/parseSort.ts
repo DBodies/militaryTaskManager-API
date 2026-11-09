@@ -28,24 +28,22 @@ export const parseSortBy = (sortBy: unknown): SortBy => {
     return 'createdAt'
 }
 
-export const parseSearch = (search:unknown) => {
-    const isString = typeof search === 'string'
-    if (!isString) return null
-    const normalized = search.trim()
-    return normalized
-}
-
 export type SortParams = {
     sortOrder?: unknown,
     sortBy?: unknown,
     search?: unknown
 }
 
+export const parseSearch = (search:unknown):string | undefined => {
+    if(typeof search !== 'string') return undefined
+    return search.trim() || undefined
+}
+
 export const parsedSort = (query:SortParams) => {
     const { sortOrder, sortBy, search } = query
-    const parsedSearchValue = parseSearch(search)
     const parsedSortOrder = parseSortOrder(sortOrder)
     const parsedSortBy = parseSortBy(sortBy)
+    const parsedSearchValue = parseSearch(search)
     return {
         sortOrder: parsedSortOrder,
         sortBy: parsedSortBy,
