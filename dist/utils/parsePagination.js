@@ -1,17 +1,21 @@
-export const parseString = (numbers, defaultValue) => {
-    const isString = typeof numbers === 'string';
-    if (!isString)
-        return defaultValue;
-    const parsedNumbers = parseInt(numbers, 10);
-    if (Number.isNaN(parsedNumbers)) {
+import createHttpError from "http-errors";
+export const parseString = (value, defaultValue) => {
+    if (value === undefined) {
         return defaultValue;
     }
-    return parsedNumbers;
+    if (typeof value !== 'string' || !/^\d+$/.test(value)) {
+        throw createHttpError(400, 'Expected a positive integer');
+    }
+    const parsedNumber = Number(value);
+    if (!Number.isSafeInteger(parsedNumber) || parsedNumber < 1) {
+        throw createHttpError(400, 'Expected a positive integer');
+    }
+    return parsedNumber;
 };
 export const parsePaginationParams = (query) => {
     const { page, perPage } = query;
     const parsedPage = parseString(page, 1);
-    const parsedPerPage = parseString(perPage, 10);
+    const parsedPerPage = Math.min(parseString(perPage, 10), 100);
     return {
         page: parsedPage,
         perPage: parsedPerPage

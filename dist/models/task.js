@@ -10,7 +10,8 @@ const taskSchema = new Schema({
     description: {
         type: String,
         maxlength: 1000,
-        trim: true
+        trim: true,
+        required: true
     },
     status: {
         type: String,
@@ -32,6 +33,7 @@ const taskSchema = new Schema({
     },
     dueDate: {
         type: Date,
+        required: true
     },
     isArchived: {
         type: Boolean,
