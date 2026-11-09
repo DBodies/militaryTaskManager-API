@@ -21,17 +21,15 @@ export const parseSortBy = (sortBy) => {
     return 'createdAt';
 };
 export const parseSearch = (search) => {
-    const isString = typeof search === 'string';
-    if (!isString)
-        return null;
-    const normalized = search.trim();
-    return normalized;
+    if (typeof search !== 'string')
+        return undefined;
+    return search.trim() || undefined;
 };
 export const parsedSort = (query) => {
     const { sortOrder, sortBy, search } = query;
-    const parsedSearchValue = parseSearch(search);
     const parsedSortOrder = parseSortOrder(sortOrder);
     const parsedSortBy = parseSortBy(sortBy);
+    const parsedSearchValue = parseSearch(search);
     return {
         sortOrder: parsedSortOrder,
         sortBy: parsedSortBy,

@@ -1,5 +1,6 @@
 import createHttpError from "http-errors";
-export const validateBody = (schema) => async (req, res, next) => {
+import Joi from "joi";
+export const validateBody = (schema) => async (req, _res, next) => {
     try {
         const value = await schema.validateAsync(req.body, {
             abortEarly: false
@@ -8,9 +9,12 @@ export const validateBody = (schema) => async (req, res, next) => {
         next();
     }
     catch (err) {
-        const error = createHttpError(400, 'Bad Request', {
-            errors: err.details
-        });
-        next(error);
+        if (Joi.isError(err)) {
+            next(createHttpError(400, 'Bad Request', {
+                errors: err.details
+            }));
+            return;
+        }
+        next(err);
     }
 };

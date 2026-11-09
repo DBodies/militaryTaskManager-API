@@ -1,8 +1,13 @@
-import { getAllTask } from "../service/CRUD.js";
+import { getAllTaskAdmin } from "../service/CRUD.js";
 import { parsePaginationParams } from "../utils/parsePagination.js";
 import { parsedSort } from "../utils/parseSort.js";
+import { parseFiltersFields } from "../utils/filterParsers.js";
 export const userController = async (req, res) => {
     const user = req.user;
+    if (!user) {
+        res.status(401).json({ message: 'Unauthorized' });
+        return;
+    }
     res.status(200).json({
         message: 'Current user',
         data: {
@@ -17,7 +22,7 @@ export const getAllTasksAdminController = async (req, res) => {
     const { page, perPage } = parsePaginationParams(req.query);
     const filter = parseFiltersFields(req.query);
     const { sortOrder, sortBy, search } = parsedSort(req.query);
-    const response = await getAllTask({
+    const response = await getAllTaskAdmin({
         page,
         perPage,
         filter,

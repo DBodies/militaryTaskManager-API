@@ -54,11 +54,11 @@ export const parsePriority = (priority:unknown):TaskPriority | undefined => {
         return undefined
     }
     if(typeof priority !== 'string') {
-        throw createHttpError(404,' Please set the correct status')
+        throw createHttpError(400,' Please set the correct status')
     }
     const normalized = priority.trim().toLowerCase()
     if(!isTaskPriority(normalized)) {
-        throw createHttpError(404, ' Please select the correct prioity type')
+        throw createHttpError(400, ' Please select the correct prioity type')
     }
     return normalized
 }
@@ -77,11 +77,11 @@ export const parseCategory = (category:unknown):TaskCategory | undefined => {
     if(category === undefined || category === null) {
     return undefined} 
     if(typeof category !== 'string' ) {
-        throw createHttpError(404, 'Please set the correct category')
+        throw createHttpError(400, 'Please set the correct category')
     }
     const normalized = category.trim().toLowerCase()
     if(!isTaskkCategory(normalized)) {
-        throw createHttpError(404, 'Please select the correct category`s type')
+        throw createHttpError(400, 'Please select the correct category`s type')
     }
     return normalized
 }

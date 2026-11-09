@@ -12,7 +12,7 @@ export interface Task  {
     status: TaskStatus,
     priority: TaskPriority,
     category: TaskCategory,
-    dueDate?: Date,
+    dueDate: Date,
     isArchived?: boolean,
     owner: ownerType,
     createdAt: Date,
@@ -24,7 +24,7 @@ export interface CreatedTaskDTO  {
     status: TaskStatus,
     priority: TaskPriority,
     category: TaskCategory,
-    dueDate?: Date,
+    dueDate: Date,
 }
 export interface UpdatedTaskDTO  {
     title?: string,
@@ -32,7 +32,7 @@ export interface UpdatedTaskDTO  {
     status?: TaskStatus,
     priority?: TaskPriority,
     category?: TaskCategory,
-    dueDate?: Date,
+    dueDate: Date,
 }
 export type GetAllTaskParams = {
     page?: number,
@@ -60,13 +60,4 @@ export type TaskOwnerParams = {
 export type GetAllTaskAdminParams = Omit<GetAllTaskParams, 'owner'>
 export type GetAllTaskBaseParams = GetAllTaskAdminParams & {
     owner?: ownerType
-}
-export type RegisterDTO = {
-    name: string,
-    email: string,
-    password: string
-}
-export type LoginDTO = {
-    email: string,
-    password: string
 }

@@ -3,7 +3,7 @@ import { User } from "../models/user.js"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { getEnvVar } from "../utils/getEnvVar.js"
-import { LoginDTO, RegisterDTO } from "../types/task.js"
+import { LoginDTO, RegisterDTO } from "../types/auth.js"
 import { UserInterface, UserLoginResult, SafeUser } from "../types/user.js"
 
 export const register = async (payload: RegisterDTO): Promise<UserInterface> => {
@@ -47,7 +47,8 @@ if (!Number.isSafeInteger(expiresIn) || expiresIn <= 0) {
 
     const safeUser: SafeUser = {
         name: user.name,
-        email: user.email
+        email: user.email,
+        role: user.role
     }
     return {
         user: safeUser,

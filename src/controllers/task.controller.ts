@@ -37,9 +37,6 @@ export const getAllTasksController = async (req: Request<{}, {}, Task, FilerFiel
     const { page, perPage } = parsePaginationParams(req.query)
     const filter = parseFiltersFields(req.query)
     const { sortOrder, sortBy, search } = parsedSort(req.query)
-    if (!search) {
-        return undefined
-    }
     const owner = req.user._id
     const response = await getAllTask({
         page,

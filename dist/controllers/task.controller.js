@@ -5,9 +5,10 @@ import { parseFiltersFields } from "../utils/filterParsers.js";
 import { parsedSort } from "../utils/parseSort.js";
 export const createTaskController = async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({
+        res.status(401).json({
             message: 'Unauthorized'
         });
+        return;
     }
     const owner = req.user._id;
     const updateData = req.body;
@@ -22,16 +23,14 @@ export const createTaskController = async (req, res) => {
 };
 export const getAllTasksController = async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({
+        res.status(401).json({
             message: 'Unauthorized'
         });
+        return;
     }
     const { page, perPage } = parsePaginationParams(req.query);
     const filter = parseFiltersFields(req.query);
     const { sortOrder, sortBy, search } = parsedSort(req.query);
-    if (!search) {
-        return undefined;
-    }
     const owner = req.user._id;
     const response = await getAllTask({
         page,
@@ -50,9 +49,10 @@ export const getAllTasksController = async (req, res) => {
 };
 export const getTaskByIdController = async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({
+        res.status(401).json({
             message: 'Unauthorized'
         });
+        return;
     }
     const { taskId } = req.params;
     const owner = req.user._id;
@@ -70,9 +70,10 @@ export const getTaskByIdController = async (req, res) => {
 };
 export const updateByIdController = async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({
+        res.status(401).json({
             message: "Unauthorized",
         });
+        return;
     }
     const { taskId } = req.params;
     const updateData = req.body;
@@ -100,9 +101,10 @@ export const deleteByIdController = async (req, res) => {
 };
 export const archivedTaskController = async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({
+        res.status(401).json({
             message: 'Unauthorized'
         });
+        return;
     }
     const { taskId } = req.params;
     const owner = req.user._id;

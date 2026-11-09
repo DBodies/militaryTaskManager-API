@@ -1,5 +1,5 @@
 import createHttpError from "http-errors";
-import mongoose, { isValidObjectId } from "mongoose";
+import { isValidObjectId } from "mongoose";
 export const isValidId = (req, res, next) => {
     const { taskId } = req.params;
     if (!isValidObjectId(taskId)) {

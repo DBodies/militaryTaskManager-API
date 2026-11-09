@@ -1,6 +1,7 @@
+import { CorsOptions } from "cors";
 import { getEnvVar } from "./getEnvVar.js";
 
-export const corsOptions = {
+export const corsOptions:CorsOptions = {
     origin: function (origin, cb) {
         const allowedOrigin = getEnvVar('ALLOWED_ORIGIN')
         if (!origin || origin === allowedOrigin) {

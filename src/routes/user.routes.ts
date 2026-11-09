@@ -7,6 +7,6 @@ import { checkRoles } from "../middlewares/checkRole.js";
 
 const router = Router()
 
-router.get('/me', authMiddleware, ctrlWrapper(userController))
-router.get('/admin/tasks', authMiddleware, checkRoles('admin'), ctrlWrapper(getAllTasksAdminController))
+router.get('/me', authMiddleware, userController)
+router.get('/admin/tasks', authMiddleware, checkRoles('admin'), getAllTasksAdminController)
 export default router

@@ -26,15 +26,18 @@ export const login = async (payload) => {
     if (!comparePassword) {
         throw createHttpError(401, 'Email or password is wrong');
     }
+    const expiresIn = Number(getEnvVar('JWT_EXPIRES_IN'));
+    if (!Number.isSafeInteger(expiresIn) || expiresIn <= 0) {
+        throw new Error('JWT_EXPIRES_IN must be a positive integer in seconds');
+    }
     const accessToken = jwt.sign({
         userId: user._id,
         role: user.role
-    }, getEnvVar('JWT_SECRET'), {
-        expiresIn: getEnvVar('JWT_EXPIRES_IN')
-    });
+    }, getEnvVar('JWT_SECRET'), { expiresIn });
     const safeUser = {
         name: user.name,
-        email: user.email
+        email: user.email,
+        role: user.role
     };
     return {
         user: safeUser,
