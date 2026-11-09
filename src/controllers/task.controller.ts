@@ -27,7 +27,7 @@ export const createTaskController = async (req: Request<{}, {}, CreatedTaskDTO>,
     })
 }
 
-export const getAllTasksController = async (req: Request<{}, {}, Task, FilerFields>, res: Response):Promise<void> => {
+export const getAllTasksController = async (req: Request<{}, {}, {}, FilerFields>, res: Response):Promise<void> => {
         if (!req.user) {
          res.status(401).json({
             message: 'Unauthorized'
@@ -106,7 +106,7 @@ export const updateByIdController = async (req: Request<TaskParams, {}, UpdatedT
         data: response
     })
 } 
-export const deleteByIdController = async (req: Request<TaskParams, {}, Task>, res: Response): Promise<void> => {
+export const deleteByIdController = async (req: Request<TaskParams>, res: Response): Promise<void> => {
     if (!req.user) {
         res.status(401).json({
             message: 'Unauthorized'
@@ -118,7 +118,7 @@ export const deleteByIdController = async (req: Request<TaskParams, {}, Task>, r
     await deleteById({ taskId, owner })
     res.status(204).send()
 }
-export const archivedTaskController = async (req: Request<TaskParams, {}, Task>, res: Response):Promise<void> => {
+export const archivedTaskController = async (req: Request<TaskParams>, res: Response):Promise<void> => {
     if (!req.user) {
          res.status(401).json({
             message: 'Unauthorized'

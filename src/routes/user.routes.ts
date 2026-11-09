@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { ctrlWrapper } from "../middlewares/ctrlWrapper.js";
 import { getAllTasksAdminController, userController } from "../controllers/userController.js";
 import { authMiddleware } from "../middlewares/authMiddlewares.js";
 import { checkRoles } from "../middlewares/checkRole.js";

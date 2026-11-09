@@ -32,7 +32,7 @@ export interface UpdatedTaskDTO  {
     status?: TaskStatus,
     priority?: TaskPriority,
     category?: TaskCategory,
-    dueDate: Date,
+    dueDate?: Date,
 }
 export type GetAllTaskParams = {
     page?: number,
